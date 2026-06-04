@@ -1,0 +1,22 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageRepository: 'sriiraman/june2026pro'
+  tag: '$(Build.BuildId)'
+
+steps:
+
+- task: Docker@2
+  displayName: Build and Push Docker Image
+  inputs:
+    containerRegistry: 'docker'
+    repository: 'sriiraman/june2026pro'
+    command: 'buildAndPush'
+    Dockerfile: 'Dockerfile'
+    tags: |
+      latest
+      $(Build.BuildId)
