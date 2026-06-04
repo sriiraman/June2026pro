@@ -2,21 +2,19 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  imageRepository: 'sriiraman/june2026pro'
-  tag: '$(Build.BuildId)'
+  vmImage: ubuntu-latest
 
 steps:
-
-- task: Docker@2
-  displayName: Build and Push Docker Image
+- task: SonarQubePrepare@7
   inputs:
-    containerRegistry: 'Docker'
-    repository: '$(imageRepository)'
-    command: 'buildAndPush'
-    Dockerfile: 'Dockerfile'
-    tags: |
-      latest
-      $(tag)
+    SonarQube: 'Sonarqube'
+    scannerMode: 'Other'
+
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean verify sonar:sonar'
+
+- task: SonarQubePublish@7
+  inputs:
+    pollingTimeoutSec: '300'
